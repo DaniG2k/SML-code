@@ -64,6 +64,40 @@ val longest_capitalized = longest_string1 o only_capitals
 fun rev_string s = (String.implode o rev o String.explode) s
 
 (*7*)
-(*
-fun first_answer
-*)
+fun first_answer alpha lst =
+    case lst of
+	x::xs => (case alpha x of
+		     SOME v => v
+		   | NONE => first_answer alpha xs)
+      | _ => raise NoAnswer
+					  
+(* Helper function to test first_answer *)
+(*fun is_even x = if x mod 2 = 0 then SOME([x]) else NONE*)
+
+(*8*)
+fun all_answers alpha lst=
+    let	fun helper (alpha, lst, acc)=
+	    case lst of
+		nil => SOME acc
+	      | x::xs => (case alpha x of
+			     NONE => NONE
+			   | SOME e => helper(alpha, xs, acc @ e))
+    in
+	helper(alpha, lst, [])
+    end
+
+(*9a*)
+fun count_wildcards p=
+    g (fn _ => 1) (fn _ => 0) p
+
+(*9b*)
+fun count_wild_and_variable_lengths p=
+    g (fn _ => 1) (fn x => String.size x) p
+
+(*9c*)
+fun count_some_var (s, p)=
+    g (fn _ => 0) (fn x => if x = s then 1 else 0) p
+
+(*10*)
+(*fun check_pat p= *)
+    
