@@ -99,5 +99,16 @@ fun count_some_var (s, p)=
     g (fn _ => 0) (fn x => if x = s then 1 else 0) p
 
 (*10*)
-(*fun check_pat p= *)
-    
+fun check_pat p=
+    let fun aux (p, acc)=
+	    case p of
+		TupleP ps => List.foldl aux acc ps
+	      | ConstructorP(s,ps) => aux(ps, s::acc)
+	      | Variable s => s::acc
+	      | _ => acc
+	fun no_duplicates [] = true
+	  | no_duplicates (x::xs) = List.exists (fn y => x <> y) xs orelse no_duplicates xs
+    in
+	no_duplicates(aux(p, []))
+    end
+

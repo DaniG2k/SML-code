@@ -36,6 +36,7 @@ val p15 = count_wildcards a = 4;
 
 val pat1 = TupleP([ConstP 12, Variable "var1", ConstructorP("constr1", Wildcard)]);
 val pat2 = TupleP([Variable "var", Wildcard, TupleP([Variable "var", Wildcard, TupleP([Variable "var", Wildcard])])]);
+val pat3 = TupleP([Variable "var1", Wildcard, TupleP([Variable "var2", Wildcard, TupleP([Variable "var3", Wildcard])])]);
 val a09b1 = count_wild_and_variable_lengths pat1 = 5;
 val a09b2 = count_wild_and_variable_lengths UnitP = 0;
 val a09b3 = count_wild_and_variable_lengths pat2 = 12;
@@ -43,3 +44,8 @@ val a09b3 = count_wild_and_variable_lengths pat2 = 12;
 val a09c1 = count_some_var("var1", pat1) = 1;
 val a09c2 = count_some_var("whatever", UnitP) = 0;
 val a09c3 = count_some_var("var", pat2) = 3;
+
+
+val a1001 = check_pat UnitP;
+val a1002 = check_pat pat1;
+val a1003 = check_pat pat3;
