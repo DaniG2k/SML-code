@@ -63,6 +63,9 @@ val longest_capitalized = longest_string1 o only_capitals
 (*6*)
 fun rev_string s = (String.implode o rev o String.explode) s
 
+(* Helper function to test first_answer *)
+(*fun is_even x = if x mod 2 = 0 then SOME([x]) else NONE*)
+
 (*7*)
 fun first_answer f lst =
     case lst of
@@ -70,9 +73,6 @@ fun first_answer f lst =
 		     SOME v => v
 		   | NONE => first_answer f xs)
       | _ => raise NoAnswer
-					  
-(* Helper function to test first_answer *)
-(*fun is_even x = if x mod 2 = 0 then SOME([x]) else NONE*)
 
 (*8*)
 fun all_answers alpha lst=
@@ -107,9 +107,8 @@ fun check_pat p=
 	      | Variable s => s::acc
 	      | _ => acc
 	fun no_duplicates [] = true
-	  | no_duplicates (x::xs) =
-	    if List.exists (fn y => x = y) xs then false
-	    else no_duplicates xs
+	  | no_duplicates (x::xs) = if List.exists (fn y => x = y) xs then false
+				    else no_duplicates xs
     in
 	no_duplicates(aux(p, []))
     end
@@ -121,7 +120,8 @@ fun match (v, p)=
       | (Unit, UnitP) => SOME []
       | (v, Variable x) => SOME [(x,v)]
       | (Const x, ConstP y) => if x = y then SOME [] else NONE
-      | (Tuple vs, TupleP ps) => all_answers match (ListPair.zip(vs, ps))
+      | (Tuple vs, TupleP ps) => if List.length vs <> List.length ps then NONE
+				 else all_answers match (ListPair.zip(vs, ps))
       | (Constructor(s1, v'), ConstructorP(s2, p')) =>
 	if s1 = s2 then match(v',p') else NONE
       | _ => NONE

@@ -105,4 +105,12 @@ val a1003 = check_pat pat3 = true;
 val a1004 = check_pat(TupleP([Variable "x", Variable "x", Variable "x"])) = false;
 val a1005 = check_pat(TupleP([TupleP([Variable "x",ConstructorP("p",Wildcard)]),Variable "y"])) = true;
 
-val match_test = match
+val test11_1 = match (Const 10, ConstP 5) = NONE;
+val test11_2 = match (Unit, Variable "Foo") = SOME [("Foo", Unit)];
+val test11_3 = match (Tuple([Const 10, Unit, Unit]), TupleP([ConstP 10, UnitP, Variable "hello"])) = SOME [("hello", Unit)];
+val test11_4 = match (Tuple([Const 1, Unit, Tuple([Const 2, Unit, Tuple([Const 3])])]),
+		      TupleP([Variable "var1", Wildcard, TupleP([Variable "var2", Wildcard, TupleP([Variable "var3", Wildcard])])])) = NONE;
+val test11_5 = match (Tuple([Const 1, Unit, Tuple([Const 2, Unit, Tuple([Const 3])])]),
+		      TupleP([Variable "var1", Wildcard, TupleP([Variable "var2", Wildcard, TupleP([Variable "var3"])])])) = SOME [("var1",Const 1),("var2",Const 2),("var3",Const 3)];
+val test11_6 = match (Tuple([Const 1, Unit, Tuple([Const 2, Unit, Tuple([Const 3])])]),
+		      TupleP([Variable "var1", Wildcard, TupleP([Variable "var2", ConstP 3, TupleP([Variable "var3"])])])) = NONE;
