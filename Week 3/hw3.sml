@@ -1,4 +1,4 @@
-(* Coursera Programming Languages, Homework 3, Provided Code *)
+urser(* Coursera Programming Languages, Homework 3, Provided Code *)
 
 exception NoAnswer
 
@@ -64,11 +64,11 @@ val longest_capitalized = longest_string1 o only_capitals
 fun rev_string s = (String.implode o rev o String.explode) s
 
 (*7*)
-fun first_answer alpha lst =
+fun first_answer f lst =
     case lst of
-	x::xs => (case alpha x of
+	x::xs => (case f x of
 		     SOME v => v
-		   | NONE => first_answer alpha xs)
+		   | NONE => first_answer f xs)
       | _ => raise NoAnswer
 					  
 (* Helper function to test first_answer *)
@@ -100,15 +100,31 @@ fun count_some_var (s, p)=
 
 (*10*)
 fun check_pat p=
-    let fun aux (p, acc)=
+    let fun aux (acc,p)=
 	    case p of
 		TupleP ps => List.foldl aux acc ps
-	      | ConstructorP(s,ps) => aux(ps, s::acc)
+	      | ConstructorP(s,ps) => aux(s::acc,ps)
 	      | Variable s => s::acc
 	      | _ => acc
 	fun no_duplicates [] = true
 	  | no_duplicates (x::xs) = List.exists (fn y => x <> y) xs orelse no_duplicates xs
     in
-	no_duplicates(aux(p, []))
+	no_duplicates(aux([], p))
     end
 
+(*11*)
+fun match (v, p)=
+    case (v, p) of
+	(_,Wildcard) => SOME []
+      | (Unit, UnitP) => SOME []
+      | (v, Variable x) => SOME [(x,v)]
+      | (Const x, ConstP y) => if x = y then SOME [] else NONE
+      | (Tuple vs, TupleP ps) => all_answers match (ListPair.zip(vs, ps))
+      | (Constructor(s1, v), ConstructorP(s2, p)) =>
+	if s1 = s2 then match(v,p) else NONE
+      | _ => NONE
+
+(*12*)
+fun first_match v pl=
+    SOME (first_answer (fn x => match(v,x)) pl)
+    handle NoAnswer => NONE
