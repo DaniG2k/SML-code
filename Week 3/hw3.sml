@@ -1,4 +1,4 @@
-urser(* Coursera Programming Languages, Homework 3, Provided Code *)
+(* Coursera Programming Languages, Homework 3, Provided Code *)
 
 exception NoAnswer
 
@@ -97,21 +97,23 @@ fun count_wild_and_variable_lengths p=
 (*9c*)
 fun count_some_var (s, p)=
     g (fn _ => 0) (fn x => if x = s then 1 else 0) p
-
+      
 (*10*)
 fun check_pat p=
-    let fun aux (acc,p)=
+    let fun aux (p, acc)=
 	    case p of
-		TupleP ps => List.foldl aux acc ps
-	      | ConstructorP(s,ps) => aux(s::acc,ps)
+		TupleP ps => List.foldl (fn (x,y) => aux(x,y)) acc ps
+	      | ConstructorP(s,ps) => aux(ps, s::acc)
 	      | Variable s => s::acc
 	      | _ => acc
 	fun no_duplicates [] = true
-	  | no_duplicates (x::xs) = List.exists (fn y => x <> y) xs orelse no_duplicates xs
+	  | no_duplicates (x::xs) =
+	    if List.exists (fn y => x = y) xs then false
+	    else no_duplicates xs
     in
-	no_duplicates(aux([], p))
+	no_duplicates(aux(p, []))
     end
-
+				    
 (*11*)
 fun match (v, p)=
     case (v, p) of
@@ -120,8 +122,8 @@ fun match (v, p)=
       | (v, Variable x) => SOME [(x,v)]
       | (Const x, ConstP y) => if x = y then SOME [] else NONE
       | (Tuple vs, TupleP ps) => all_answers match (ListPair.zip(vs, ps))
-      | (Constructor(s1, v), ConstructorP(s2, p)) =>
-	if s1 = s2 then match(v,p) else NONE
+      | (Constructor(s1, v'), ConstructorP(s2, p')) =>
+	if s1 = s2 then match(v',p') else NONE
       | _ => NONE
 
 (*12*)

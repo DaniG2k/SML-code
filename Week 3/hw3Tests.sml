@@ -46,10 +46,6 @@ val a09c2 = count_some_var("whatever", UnitP) = 0;
 val a09c3 = count_some_var("var", pat2) = 3;
 
 
-val a1001 = check_pat UnitP;
-val a1002 = check_pat pat1;
-val a1003 = check_pat pat3;
-
 val p16 = match( Const 1, Variable "foo" ) = SOME [("foo",Const 1)];
 val p17 = match( Tuple[ Unit, Unit, Const 2 ], TupleP[ Variable "a", UnitP, ConstP 2 ] );
 (***************************)
@@ -103,3 +99,10 @@ first_match cons1 [consp2,pats_tuple,consp1]
 first_match cons1 [consp2,pats_tuple,Variable("an_answer")]
 = SOME [("an_answer",Constructor ("answer",Const 42))];
 
+val a1001 = check_pat UnitP = true;
+val a1002 = check_pat pat1 = true;
+val a1003 = check_pat pat3 = true;
+val a1004 = check_pat(TupleP([Variable "x", Variable "x", Variable "x"])) = false;
+val a1005 = check_pat(TupleP([TupleP([Variable "x",ConstructorP("p",Wildcard)]),Variable "y"])) = true;
+
+val match_test = match
